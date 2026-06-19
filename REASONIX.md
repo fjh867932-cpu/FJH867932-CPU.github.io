@@ -196,7 +196,7 @@ box-shadow: /* 轻微增强 */;
 | 文件 | 用途 |
 | ---- | ---- |
 | `gate.html` | 入口过渡页（旋转光环动画） |
-| `index.html` | 密钥验证界面 |
+| `index.html` | 门禁过渡页（视频背景，点击进入主站） |
 | `main.html` | 主 SPA（便签墙 + AI 对话 + 信息板块） |
 | `style.css` | 全局样式系统 |
 | `app.js` | SPA 路由 + 便签墙逻辑 + AI 对话逻辑 |
@@ -208,7 +208,7 @@ box-shadow: /* 轻微增强 */;
 ## 数据流
 
 ```
-gate.html → (点击) → index.html → (密钥验证) → main.html
+gate.html → (点击) → index.html → (点击) → main.html
                                                     ├── 便签墙 ← Supabase REST API
                                                     ├── AI 对话 ← Supabase Edge Function
                                                     └── 背景图 ← Supabase REST API
@@ -216,5 +216,5 @@ gate.html → (点击) → index.html → (密钥验证) → main.html
 
 ## 约束
 
-- 修改密钥界面和 main 时，**不动 gate.html**
+- 修改门禁页面和 main 时，**不动 gate.html**
 - 所有视觉变更必须对齐本规格说明中的设计系统
