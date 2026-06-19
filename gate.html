@@ -3,273 +3,283 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Hui辉</title>
 
 <style>
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+/* ================================================================
+   Reset
+   ================================================================ */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-html,body{
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    font-family:"Segoe UI",sans-serif;
-    cursor:pointer;
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+  cursor: pointer;
+  background: #000; /* 视频加载前的底色 */
 }
 
-/* 背景视频 */
+/* ================================================================
+   第一层：视频背景
+   ================================================================ */
+.bg-video {
+  position: fixed;
+  inset: 0;
 
-.bg-video{
-    position:fixed;
-    inset:0;
+  width: 100%;
+  height: 100%;
 
-    width:100%;
-    height:100%;
+  object-fit: cover;
+  object-position: center center;
 
-    object-fit:cover;
-    object-position:center center;
+  z-index: 0;
 
-    transform:scale(1.05);
-
-    animation:slowZoom 25s ease-in-out infinite alternate;
-
-    /* 视频加载前 / 失败时显示 poster */
-    background-size:cover;
-    background-position:center center;
-    background-repeat:no-repeat;
+  /* 视频未加载 / 失败时显示 poster 回退图 */
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
-/* 暗化层 */
+/* ================================================================
+   第二层：半透明遮罩
+   ================================================================ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
 
-.overlay{
-    position:fixed;
-    inset:0;
+  background: linear-gradient(
+    180deg,
+    rgba(0,0,0,0.55) 0%,
+    rgba(0,0,0,0.30) 50%,
+    rgba(0,0,0,0.60) 100%
+  );
 
-    background:
-    linear-gradient(
-        rgba(0,0,0,.55),
-        rgba(0,0,0,.35),
-        rgba(0,0,0,.65)
-    );
-
-    backdrop-filter:blur(2px);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 }
 
-/* 内容 */
+/* ================================================================
+   第三层：文字与 UI
+   ================================================================ */
+.content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 
-.content{
-    position:absolute;
+  z-index: 10;
 
-    top:50%;
-    left:50%;
+  text-align: center;
 
-    transform:translate(-50%,-50%);
+  width: 90%;
+  max-width: 600px;
 
-    text-align:center;
-
-    z-index:10;
-
-    width:90%;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-.logo{
+.site-name {
+  font-size: clamp(40px, 7vw, 90px);
+  font-weight: 700;
 
-    font-size:clamp(40px,7vw,90px);
+  color: #fff;
 
-    font-weight:700;
+  letter-spacing: 10px;
 
-    color:white;
+  text-shadow:
+    0 0 20px rgba(142,197,255,0.6),
+    0 0 40px rgba(106,167,255,0.4);
 
-    letter-spacing:10px;
-
-    text-shadow:
-    0 0 20px #8ec5ff,
-    0 0 40px #6aa7ff;
-
-    animation:breathe 4s ease infinite;
+  animation: breathe 4s ease-in-out infinite;
 }
 
-.subtitle{
+.site-subtitle {
+  margin-top: 18px;
 
-    margin-top:18px;
+  font-size: clamp(14px, 2vw, 22px);
 
-    font-size:clamp(14px,2vw,22px);
+  color: rgba(255,255,255,0.75);
 
-    color:rgba(255,255,255,.75);
-
-    letter-spacing:4px;
+  letter-spacing: 4px;
 }
 
-.enter{
+.click-hint {
+  margin-top: 50px;
 
-    margin-top:50px;
+  font-size: 14px;
 
-    font-size:14px;
+  color: rgba(255,255,255,0.6);
 
-    color:rgba(255,255,255,.6);
+  letter-spacing: 3px;
 
-    letter-spacing:3px;
-
-    animation:flash 2.5s infinite;
+  animation: flash 2.5s ease-in-out infinite;
 }
 
-.corner{
+/* 底部文字 */
+.corner-text {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
 
-    position:fixed;
+  color: rgba(255,255,255,0.4);
+  font-size: 12px;
+  letter-spacing: 2px;
 
-    bottom:30px;
-    left:50%;
-
-    transform:translateX(-50%);
-
-    color:rgba(255,255,255,.4);
-
-    font-size:12px;
-
-    letter-spacing:2px;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-/* 淡出 */
-
-.fadeout{
-    animation:fadeOut .9s forwards;
+/* ================================================================
+   淡出动画
+   ================================================================ */
+.fadeout {
+  animation: fadeOut 0.9s ease forwards;
 }
 
-@keyframes breathe{
-
-    0%{
-        opacity:.8;
-    }
-
-    50%{
-        opacity:1;
-    }
-
-    100%{
-        opacity:.8;
-    }
+/* ================================================================
+   Keyframes
+   ================================================================ */
+@keyframes breathe {
+  0%, 100% { opacity: 0.8; }
+  50%      { opacity: 1; }
 }
 
-@keyframes flash{
-
-    50%{
-        opacity:.3;
-    }
+@keyframes flash {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.3; }
 }
 
-@keyframes slowZoom{
-
-    from{
-        transform:scale(1.05);
-    }
-
-    to{
-        transform:scale(1.15);
-    }
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    filter: blur(4px);
+  }
 }
 
-@keyframes fadeOut{
+/* ================================================================
+   移动端微调
+   ================================================================ */
+@media (max-width: 768px) {
+  .site-name {
+    letter-spacing: 5px;
+  }
 
-    to{
-        opacity:0;
-        transform:scale(1.03);
-    }
-}
+  .site-subtitle {
+    font-size: 14px;
+  }
 
-/* 手机优化 */
+  .click-hint {
+    margin-top: 40px;
+  }
 
-@media (max-width:768px){
-
-    .logo{
-        letter-spacing:5px;
-    }
-
-    .subtitle{
-        font-size:14px;
-    }
+  .corner-text {
+    font-size: 11px;
+  }
 }
 
 </style>
 </head>
-
 <body>
 
-<video class="bg-video" id="bgVideo" autoplay muted loop playsinline preload="auto"></video>
+<!-- ═══ 第一层：视频背景 ═══ -->
+<video
+  class="bg-video"
+  id="bgVideo"
+  autoplay
+  muted
+  loop
+  playsinline
+  preload="auto"
+  disableRemotePlayback
+  x-webkit-airplay="deny"
+></video>
 
-<div class="overlay" id="overlay"></div>
+<!-- ═══ 第二层：半透明遮罩 ═══ -->
+<div class="overlay"></div>
 
+<!-- ═══ 第三层：文字与 UI ═══ -->
 <div class="content" id="content">
-
-    <div class="logo">
-        Continue
-    </div>
-
-    <div class="subtitle">
-        灵感非努力可得
-    </div>
-
-    <div class="enter">
-        点击屏幕继续
-
-    </div>
-
+  <div class="site-name">Continue</div>
+  <div class="site-subtitle">灵感非努力可得</div>
+  <div class="click-hint">Click Anywhere To Enter</div>
 </div>
 
-<div class="corner">
-    give me enough time
-</div>
+<div class="corner-text">give me enough time</div>
 
+<!-- ═══ 配置 ═══ -->
 <script src="gate-config.js"></script>
+
+<!-- ═══ 主逻辑 ═══ -->
 <script>
+(function() {
+  'use strict';
 
-// ---- 根据设备选择视频源 ----
-(function(){
-    const video = document.getElementById('bgVideo');
-    const isMobile = window.innerWidth < GATE_MOBILE_BREAKPOINT;
-    const src = isMobile ? GATE_VIDEO_MOBILE : GATE_VIDEO_PC;
+  var video    = document.getElementById('bgVideo');
+  var isMobile = window.innerWidth < GATE_MOBILE_BREAKPOINT;
+  var src      = isMobile ? GATE_VIDEO_MOBILE : GATE_VIDEO_PC;
 
-    // 设置 poster 回退图
-    video.setAttribute('poster', GATE_VIDEO_POSTER);
-    video.style.backgroundImage = 'url(' + GATE_VIDEO_POSTER + ')';
+  /* ---- 设置 poster 回退 ---- */
+  video.poster = GATE_VIDEO_POSTER;
+  video.style.backgroundImage = 'url(' + GATE_VIDEO_POSTER + ')';
 
-    // 加载视频
-    const source = document.createElement('source');
-    source.src = src;
-    source.type = 'video/mp4';
-    video.appendChild(source);
-    video.load();
-    video.play().catch(function(){});
+  /* ---- 加载视频源 ---- */
+  var source = document.createElement('source');
+  source.src  = src;
+  source.type = 'video/mp4';
+  video.appendChild(source);
+  video.load();
 
-    // 视频加载失败时保留 poster 可见
-    video.addEventListener('error', function(){
-        video.style.backgroundImage = 'url(' + GATE_VIDEO_POSTER + ')';
+  var playPromise = video.play();
+  if (playPromise !== undefined) {
+    playPromise.catch(function(err) {
+      // 浏览器阻止自动播放时静默处理，poster 仍可见
+      console.warn('Gate video autoplay blocked:', err.message);
     });
-})();
+  }
 
-// pointerdown 兼容桌面 + 移动端（无 300ms 延迟）
-var _gateFading = false;
-document.body.addEventListener('pointerdown', function(){
-    if (_gateFading) return;
-    _gateFading = true;
+  /* ---- 视频加载失败时保留 poster ---- */
+  video.addEventListener('error', function() {
+    video.style.backgroundImage = 'url(' + GATE_VIDEO_POSTER + ')';
+  });
 
-    // 标记已通过大门，避免 index.html 回跳
+  /* ---- 点击 / 按键进入 Key 验证页面 ---- */
+  var fading = false;
+
+  function enterSite() {
+    if (fading) return;
+    fading = true;
+
+    // 标记已通过 Gate，避免 index.html 回跳
     sessionStorage.setItem('passed_gate', '1');
 
     document.body.classList.add('fadeout');
 
-    setTimeout(function(){
-
-        window.location.href = '/index.html';
-
+    setTimeout(function() {
+      window.location.href = '/index.html';
     }, 900);
+  }
 
-});
+  // 鼠标 / 触屏
+  document.body.addEventListener('pointerdown', enterSite);
 
+  // 键盘无障碍（Enter / Space）
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      enterSite();
+    }
+  });
+
+})();
 </script>
 
 </body>
