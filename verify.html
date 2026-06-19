@@ -39,6 +39,7 @@
     </div>
   </div>
   <script>
+  (function(){
     const AUTH_FN_URL='https://wwqqvfnuxpddhgwuwiut.supabase.co/functions/v1/auth';
     const AUTH_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cXF2Zm51eHBkZGhnd3V3aXV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NzAwNDcsImV4cCI6MjA5NjI0NjA0N30.eCfxc2WeXkpJiMXRCzydwmFE3Z6UMk3aqOdrhdzZbug';
 
@@ -63,6 +64,7 @@
       }catch(_){err.textContent='网络连接失败';err.style.display='block'}
       btn.textContent='验证进入';btn.disabled=false;
     };
+  })();
   </script>
 </body>
 </html>
