@@ -18,6 +18,8 @@
     .panel input::placeholder{color:rgba(138,143,168,.35)}
     .panel button{width:100%;padding:12px;margin-top:16px;font-size:14px;font-weight:600;letter-spacing:.5px;border:none;border-radius:14px;cursor:pointer;background:linear-gradient(135deg,#9bb3ff,#7b94ff);color:#fff;opacity:.85;transition:transform .4s ease,opacity .4s ease,box-shadow .4s ease;box-shadow:3px 3px 8px rgba(123,148,255,.15)}
     .panel button:hover{transform:translateY(-2px);opacity:1}.panel button:active{transform:scale(.97)}
+    .panel .skip-btn{width:100%;padding:10px;margin-top:10px;font-size:12px;letter-spacing:.5px;border:1px solid rgba(138,143,168,.25);border-radius:14px;cursor:pointer;background:transparent;color:#8a8fa8;transition:color .3s,border-color .3s}
+    .panel .skip-btn:hover{color:#2d3047;border-color:rgba(138,143,168,.5)}
     .panel .err{color:#e05555;font-size:12px;margin-top:12px;display:none;animation:fadeUp .4s ease}
     @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
   </style>
@@ -32,6 +34,7 @@
       <div class="sub">身份验证</div>
       <input type="password" id="gk" placeholder="输入访问密钥" autofocus />
       <button id="gb">验证进入</button>
+      <button class="skip-btn" id="skipBtn">直接进入</button>
       <div class="err" id="ge"></div>
     </div>
   </div>
@@ -42,6 +45,14 @@
     if(!localStorage.getItem('passed_gate')){window.location.href='/';return}
     (function(){const s=localStorage.getItem('huiwu_session');if(s){try{const{time}=JSON.parse(s);if(Date.now()-time<259200000){window.location.href='/main.html';return}}catch(_){}}})();
 
+    // ── 直接进入（跳过验证）──
+    document.getElementById('skipBtn').onclick=()=>{
+      localStorage.setItem('verified','true');
+      localStorage.setItem('huiwu_session',JSON.stringify({session:'skip.'+Date.now(),time:Date.now()}));
+      window.location.href='/main.html';
+    };
+
+    // ── 密钥验证 ──
     document.getElementById('gb').onclick=async()=>{
       const k=document.getElementById('gk').value.trim();if(!k)return;
       const btn=document.getElementById('gb'),err=document.getElementById('ge');
