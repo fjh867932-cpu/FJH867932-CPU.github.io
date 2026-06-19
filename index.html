@@ -251,20 +251,17 @@ html, body {
     video.style.backgroundImage = 'url(' + GATE_VIDEO_POSTER + ')';
   });
 
-  /* ---- 点击 / 按键进入 Key 验证页面 ---- */
+  /* ---- 点击 / 按键进入主站 ---- */
   var fading = false;
 
   function enterSite() {
     if (fading) return;
     fading = true;
 
-    // 标记已通过 Gate，避免 verify.html 回跳
-    localStorage.setItem('passed_gate', '1');
-
     document.body.classList.add('fadeout');
 
     setTimeout(function() {
-      window.location.href = '/verify.html';
+      window.location.href = '/main.html';
     }, 900);
   }
 

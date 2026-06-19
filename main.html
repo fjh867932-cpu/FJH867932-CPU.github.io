@@ -1,24 +1,17 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <script>
-    // 强制检查：防止绕过验证直接访问主站
-    if (!localStorage.getItem("verified")) {
-        localStorage.removeItem("huiwu_session");
-        window.location.href = "/verify.html";
-    }
-</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>huiwu.com</title>
+  <title>辉</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <nav id="navbar" class="navbar">
     <button id="nav-back" class="nav-back" title="返回">←</button>
-    <span id="nav-title" class="nav-title">huiwu.com</span>
+    <span id="nav-title" class="nav-title">辉</span>
     <span class="nav-spacer"></span>
   </nav>
   <main id="view" class="view"></main>

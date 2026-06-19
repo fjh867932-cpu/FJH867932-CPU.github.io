@@ -1,57 +1,8 @@
 /* ==========================================
-   huiwu.com — SPA + 便签墙 + AI 对话
+   辉 — SPA + 便签墙 + AI 对话
    ========================================== */
 
-// ─── 访问门禁 ──────────────────────────────────
-const AUTH_FN_URL = 'https://wwqqvfnuxpddhgwuwiut.supabase.co/functions/v1/auth';
-const AUTH_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cXF2Zm51eHBkZGhnd3V3aXV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NzAwNDcsImV4cCI6MjA5NjI0NjA0N30.eCfxc2WeXkpJiMXRCzydwmFE3Z6UMk3aqOdrhdzZbug';
-
-(function checkAuth() {
-  const session = localStorage.getItem('huiwu_session');
-  if (session) {
-    try {
-      const { time } = JSON.parse(session);
-      if (Date.now() - time < 3 * 24 * 60 * 60 * 1000) return; // 3天有效
-    } catch (_) {}
-  }
-  // 无有效会话，渲染门禁页
-  document.body.innerHTML = `
-    <div class="gate-page">
-      <div class="gate-box">
-        <h1>huiwu.com</h1>
-        <p>请输入访问密钥</p>
-        <input type="password" id="gateKey" placeholder="密钥…" autofocus />
-        <button id="gateBtn">进入</button>
-        <label><input type="checkbox" id="gateRemember" checked /> 记住 3 天</label>
-        <p id="gateErr" style="color:#e05555;display:none"></p>
-      </div>
-    </div>`;
-  document.getElementById('gateBtn').addEventListener('click', async () => {
-    const key = document.getElementById('gateKey').value.trim();
-    if (!key) return;
-    try {
-      const res = await fetch(AUTH_FN_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AUTH_ANON_KEY}` },
-        body: JSON.stringify({ key }),
-      });
-      const data = await res.json();
-      if (data.valid) {
-        localStorage.setItem('huiwu_session', JSON.stringify({ session: data.session, time: Date.now() }));
-        location.reload();
-      } else {
-        const err = document.getElementById('gateErr');
-        err.textContent = '密钥错误';
-        err.style.display = 'block';
-      }
-    } catch (e) {
-      document.getElementById('gateErr').textContent = '网络错误';
-      document.getElementById('gateErr').style.display = 'block';
-    }
-  });
-  throw new Error('GATE'); // 阻止后续 JS 执行
-})();
-   const SUPABASE_URL = 'https://wwqqvfnuxpddhgwuwiut.supabase.co';
+const SUPABASE_URL = 'https://wwqqvfnuxpddhgwuwiut.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_JlVVDqSKs7RHM6VMldBIYA_CsLWihKo';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cXF2Zm51eHBkZGhnd3V3aXV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NzAwNDcsImV4cCI6MjA5NjI0NjA0N30.eCfxc2WeXkpJiMXRCzydwmFE3Z6UMk3aqOdrhdzZbug';
 const SUPABASE_FN_URL = `${SUPABASE_URL}/functions/v1/chat`;
@@ -74,9 +25,9 @@ const routes = {
   'info/collect': () => renderPlaceholder('信息收集', '搜集、整理、归纳，构建你的知识库。', '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'),
   'history': () => renderPlaceholder('历史记录', '更多记录功能即将上线。', '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'),
 };
-const navbarTitles = { '': 'huiwu.com', 'info': '信息板块', 'info/notes': '信息记载', 'info/reply': '信息回复', 'info/collect': '信息收集', 'history': '历史记录' };
+const navbarTitles = { '': '辉', 'info': '信息板块', 'info/notes': '信息记载', 'info/reply': '信息回复', 'info/collect': '信息收集', 'history': '历史记录' };
 
-function updateNavbar(r) { navTitle.textContent = navbarTitles[r] || 'huiwu.com'; navBack.classList.toggle('hidden', r === ''); }
+function updateNavbar(r) { navTitle.textContent = navbarTitles[r] || '辉'; navBack.classList.toggle('hidden', r === ''); }
 function goBack() { const c = getRoute(); navigateTo(c.startsWith('info/') ? 'info' : ''); }
 function getRoute() { return window.location.hash.replace(/^#\/?/, ''); }
 function navigateTo(r) { window.location.hash = '#/' + r; }
@@ -84,7 +35,7 @@ function handleRoute() { const r = getRoute(); updateNavbar(r); const fn = route
 window.addEventListener('hashchange', handleRoute); navBack.addEventListener('click', goBack);
 
 function renderHome() {
-  view.innerHTML = `<div class="page-home"><div class="home-hero"><h1>huiwu.com</h1><p>记录碎片灵感 · 解答学习困惑 · 收集万千信息</p></div><div class="home-cards"><div class="home-card" data-nav="info"><div class="home-card-icon info"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><line x1="12" y1="11" x2="16" y2="11"/><line x1="8" y1="11" x2="10" y2="11"/><line x1="12" y1="15" x2="16" y2="15"/><line x1="8" y1="15" x2="10" y2="15"/></svg></div><div class="home-card-body"><h3>信息板块</h3><p>便签记载 · AI对话 · 信息收集</p></div><span class="home-card-arrow">›</span></div><div class="home-card" data-nav="history"><div class="home-card-icon history"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="home-card-body"><h3>历史记录</h3><p>书籍阅读 · 日常记录 · 时间线回顾</p></div><span class="home-card-arrow">›</span></div></div></div>`;
+  view.innerHTML = `<div class="page-home"><div class="home-hero"><h1>辉</h1><p>记录碎片灵感 · 解答学习困惑 · 收集万千信息</p></div><div class="home-cards"><div class="home-card" data-nav="info"><div class="home-card-icon info"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><line x1="12" y1="11" x2="16" y2="11"/><line x1="8" y1="11" x2="10" y2="11"/><line x1="12" y1="15" x2="16" y2="15"/><line x1="8" y1="15" x2="10" y2="15"/></svg></div><div class="home-card-body"><h3>信息板块</h3><p>便签记载 · AI对话 · 信息收集</p></div><span class="home-card-arrow">›</span></div><div class="home-card" data-nav="history"><div class="home-card-icon history"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="home-card-body"><h3>历史记录</h3><p>书籍阅读 · 日常记录 · 时间线回顾</p></div><span class="home-card-arrow">›</span></div></div></div>`;
   view.querySelectorAll('.home-card').forEach(c => c.addEventListener('click', () => navigateTo(c.dataset.nav)));
 }
 function renderInfo() {
