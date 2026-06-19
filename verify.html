@@ -44,7 +44,9 @@
     const AUTH_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3cXF2Zm51eHBkZGhnd3V3aXV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NzAwNDcsImV4cCI6MjA5NjI0NjA0N30.eCfxc2WeXkpJiMXRCzydwmFE3Z6UMk3aqOdrhdzZbug';
 
     if(!localStorage.getItem('passed_gate')){window.location.href='/';return}
-    (function(){const s=localStorage.getItem('huiwu_session');if(s){try{const{time}=JSON.parse(s);if(Date.now()-time<259200000){window.location.href='/main.html';return}}catch(_){}}})();
+    // Session 恢复：有效会话直接跳转 main，阻止后续事件绑定
+    var _sess=localStorage.getItem('huiwu_session');
+    if(_sess){try{var _t=JSON.parse(_sess).time;if(Date.now()-_t<259200000){window.location.href='/main.html';return}}catch(_){}}
 
     // ── 直接进入（跳过验证）──
     document.getElementById('skipBtn').onclick=()=>{
