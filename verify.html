@@ -58,9 +58,9 @@
       const btn=document.getElementById('gb'),err=document.getElementById('ge');
       btn.textContent='验证中…';btn.disabled=true;err.style.display='none';
       try{const r=await fetch(AUTH_FN_URL,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+AUTH_ANON_KEY},body:JSON.stringify({key:k})});const d=await r.json();
-        if(d.valid){localStorage.setItem('huiwu_session',JSON.stringify({session:d.session,time:Date.now()}));localStorage.setItem('verified','true');setTimeout(()=>{window.location.href='/main.html'},500)}
+        if(d.valid){localStorage.setItem('huiwu_session',JSON.stringify({session:d.session,time:Date.now()}));localStorage.setItem('verified','true');window.location.replace('/main.html')}
         else{err.textContent='密钥错误';err.style.display='block'}
-      }catch(_){err.textContent='网络连接失败';err.style.display='block'}
+      }catch(e){console.error('Auth fetch failed:',e);err.textContent='网络连接失败';err.style.display='block'}
       btn.textContent='验证进入';btn.disabled=false;
     };
   </script>
