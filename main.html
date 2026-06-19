@@ -51,6 +51,136 @@
     </div>
   </template>
 
+  <!-- ═══ 记录 ═══ -->
+  <template id="tpl-records">
+    <div class="page-placeholder">
+      <div class="ph-icon">📊</div>
+      <h3>记录</h3>
+      <p>书籍阅读 · 日常记录 · 时间线回顾 — 更多功能即将上线</p>
+    </div>
+  </template>
+
+  <!-- ═══ 学习 ═══ -->
+  <template id="tpl-learn">
+    <div class="page-info">
+      <p class="section-title">选择功能</p>
+      <div class="info-cards">
+        <div class="info-card" data-nav="learn/ask">
+          <div class="info-card-dot" style="background:var(--accent)"></div>
+          <div class="info-card-body"><h4>学习求助</h4><p>文字 · 图片提问，AI 知识点分析 + 解题思路</p></div>
+          <span class="info-card-arrow">›</span>
+        </div>
+        <div class="info-card" data-nav="learn/mistakes">
+          <div class="info-card-dot" style="background:var(--accent-2,#93b5c6)"></div>
+          <div class="info-card-body"><h4>错题记录</h4><p>保存历史错题，知识点分类，错题复习</p></div>
+          <span class="info-card-arrow">›</span>
+        </div>
+        <div class="info-card" data-nav="learn/scores">
+          <div class="info-card-dot" style="background:var(--accent-3,#b8a9c9)"></div>
+          <div class="info-card-body"><h4>成绩记录</h4><p>考试成绩录入，趋势分析，学科强弱</p></div>
+          <span class="info-card-arrow">›</span>
+        </div>
+      </div>
+    </div>
+  </template>
+  <template id="tpl-learn-ask">
+    <div class="page-placeholder">
+      <div class="ph-icon">💡</div>
+      <h3>AI 学习助手</h3>
+      <p>向 AI 提问学习问题，支持文字和图片。AI 将给出知识点分析、解题思路和详细讲解。</p>
+    </div>
+  </template>
+  <template id="tpl-learn-mistakes">
+    <div class="page-placeholder">
+      <div class="ph-icon">✍️</div>
+      <h3>错题本</h3>
+      <p>保存历史错题，支持图片保存和知识点分类。后续将支持错题复习和统计分析。</p>
+    </div>
+  </template>
+  <template id="tpl-learn-scores">
+    <div class="page-placeholder">
+      <div class="ph-icon">📈</div>
+      <h3>成绩单</h3>
+      <p>记录每次考试的成绩，支持单科和总分录入。后续将支持趋势图和学科强弱分析。</p>
+    </div>
+  </template>
+
+  <!-- ═══ 计划 ═══ -->
+  <template id="tpl-plan">
+    <div class="page-info">
+      <p class="section-title">选择功能</p>
+      <div class="info-cards">
+        <div class="info-card" data-nav="plan/ai-plan">
+          <div class="info-card-dot" style="background:var(--accent)"></div>
+          <div class="info-card-body"><h4>AI 计划</h4><p>AI 逐步询问，为你生成可执行的行动计划</p></div>
+          <span class="info-card-arrow">›</span>
+        </div>
+        <div class="info-card" data-nav="plan/canvas">
+          <div class="info-card-dot" style="background:var(--accent-2,#93b5c6)"></div>
+          <div class="info-card-body"><h4>计划布</h4><p>可视化展示所有已生成的计划</p></div>
+          <span class="info-card-arrow">›</span>
+        </div>
+      </div>
+    </div>
+  </template>
+  <template id="tpl-plan-ai-plan">
+    <div class="chat-preset">
+      <div class="chat-preset-msg user">
+        <div class="chat-preset-avatar user">我</div>
+        <div class="chat-preset-bubble user">我想提高高考成绩。</div>
+      </div>
+      <div class="chat-preset-msg ai">
+        <div class="chat-preset-avatar ai">AI</div>
+        <div class="chat-preset-bubble ai">
+          好的！请补充以下信息：<br><br>
+          • 当前年级<br>
+          • 当前成绩<br>
+          • 目标成绩<br>
+          • 每日可投入时间<br>
+          • 优势学科<br>
+          • 薄弱学科
+        </div>
+      </div>
+    </div>
+  </template>
+  <template id="tpl-plan-canvas">
+    <div class="plan-canvas" id="planCanvas">
+      <div class="plan-block" data-nav="plan/detail/1">
+        <div class="plan-block-header">
+          <span class="plan-block-title">高考冲刺计划</span>
+          <span class="plan-block-status">进行中</span>
+        </div>
+        <div class="plan-block-meta">
+          <span>🎯 580 → 650分</span>
+          <span>📅 6个月</span>
+        </div>
+      </div>
+      <div class="plan-block" data-nav="plan/detail/2">
+        <div class="plan-block-header">
+          <span class="plan-block-title">英语提升计划</span>
+          <span class="plan-block-status">进行中</span>
+        </div>
+        <div class="plan-block-meta">
+          <span>🎯 110 → 135分</span>
+          <span>📅 3个月</span>
+        </div>
+      </div>
+      <div class="plan-block" data-nav="plan/detail/3">
+        <div class="plan-block-header">
+          <span class="plan-block-title">健身计划</span>
+          <span class="plan-block-status">已完成</span>
+        </div>
+        <div class="plan-block-meta">
+          <span>🎯 减脂 5kg</span>
+          <span>📅 2个月</span>
+        </div>
+      </div>
+    </div>
+  </template>
+  <template id="tpl-plan-detail">
+    <div class="timeline" id="plan-detail-timeline"></div>
+  </template>
+
   <script src="app.js"></script>
 </body>
 </html>

@@ -18,24 +18,101 @@ async function api(path, { method = 'GET', body, headers = {} } = {}) {
 
 const view = document.getElementById('view'), navTitle = document.getElementById('nav-title'), navBack = document.getElementById('nav-back');
 const tplWall = document.getElementById('tpl-wall'), tplChat = document.getElementById('tpl-chat');
+const tplRecords = document.getElementById('tpl-records'), tplLearn = document.getElementById('tpl-learn');
+const tplLearnAsk = document.getElementById('tpl-learn-ask'), tplLearnMistakes = document.getElementById('tpl-learn-mistakes');
+const tplLearnScores = document.getElementById('tpl-learn-scores'), tplPlan = document.getElementById('tpl-plan');
+const tplPlanAiPlan = document.getElementById('tpl-plan-ai-plan'), tplPlanCanvas = document.getElementById('tpl-plan-canvas');
+const tplPlanDetail = document.getElementById('tpl-plan-detail');
 const $ = (sel, ctx) => (ctx || document).querySelector(sel);
 
 const routes = {
   '': renderHome, 'info': renderInfo, 'info/notes': renderWall, 'info/reply': renderChat,
   'info/collect': () => renderPlaceholder('信息收集', '搜集、整理、归纳，构建你的知识库。', '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'),
-  'history': () => renderPlaceholder('历史记录', '更多记录功能即将上线。', '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'),
+  'records': renderRecords, 'learn': renderLearn, 'learn/ask': renderLearnAsk,
+  'learn/mistakes': renderLearnMistakes, 'learn/scores': renderLearnScores,
+  'plan': renderPlan, 'plan/ai-plan': renderPlanAiPlan, 'plan/canvas': renderPlanCanvas,
 };
-const navbarTitles = { '': '辉', 'info': '信息板块', 'info/notes': '信息记载', 'info/reply': '信息回复', 'info/collect': '信息收集', 'history': '历史记录' };
+const navbarTitles = {
+  '': '辉', 'info': '信息板块', 'info/notes': '信息记载', 'info/reply': '信息回复',
+  'info/collect': '信息收集', 'records': '记录', 'learn': '学习', 'learn/ask': '学习求助',
+  'learn/mistakes': '错题记录', 'learn/scores': '成绩记录',
+  'plan': '计划', 'plan/ai-plan': 'AI 计划', 'plan/canvas': '计划布',
+};
 
 function updateNavbar(r) { navTitle.textContent = navbarTitles[r] || '辉'; navBack.classList.toggle('hidden', r === ''); }
-function goBack() { const c = getRoute(); navigateTo(c.startsWith('info/') ? 'info' : ''); }
+function goBack() {
+  const c = getRoute();
+  if (c.startsWith('info/')) navigateTo('info');
+  else if (c.startsWith('learn/')) navigateTo('learn');
+  else if (c.startsWith('plan/detail/')) navigateTo('plan/canvas');
+  else if (c.startsWith('plan/')) navigateTo('plan');
+  else navigateTo('');
+}
 function getRoute() { return window.location.hash.replace(/^#\/?/, ''); }
 function navigateTo(r) { window.location.hash = '#/' + r; }
-function handleRoute() { const r = getRoute(); updateNavbar(r); const fn = routes[r]; view.innerHTML = ''; if (fn) fn(); else navigateTo(''); }
+function handleRoute() {
+  const r = getRoute();
+  // 计划详情：plan/detail/:id
+  if (/^plan\/detail\/(\d+)$/.test(r)) { renderPlanDetail(RegExp.$1); return; }
+  updateNavbar(r); const fn = routes[r]; view.innerHTML = ''; if (fn) fn(); else navigateTo('');
+}
+
+// ═══ 计划详情数据 ═══
+var planDetails = {
+  1:{title:'高考冲刺计划',status:'进行中',target:'580 → 650分',duration:'6个月',
+    stages:[{title:'目标',desc:'高考总分从 580 分提升至 650 分，重点突破数学和英语。'},
+      {title:'第一阶段：基础巩固',desc:'系统梳理各科知识点，补齐基础漏洞。每日 2 小时专项练习。'},
+      {title:'第二阶段：专题突破',desc:'针对薄弱学科集中训练，每周模拟测试 1 次。'},
+      {title:'第三阶段：冲刺复习',desc:'真题演练 + 错题回顾，调整应试状态和心态。'},
+      {title:'完成',desc:'达到目标分数，考取理想院校。'}]},
+  2:{title:'英语提升计划',status:'进行中',target:'110 → 135分',duration:'3个月',
+    stages:[{title:'目标',desc:'英语从 110 分提升至 135 分，重点突破阅读和写作。'},
+      {title:'第一阶段：词汇积累',desc:'每日背诵 50 个高频词汇，精读 2 篇阅读理解。'},
+      {title:'第二阶段：能力训练',desc:'每周 3 篇作文练习，听力每日 30 分钟。'},
+      {title:'完成',desc:'英语稳定在 130+ 分，阅读满分率达到 80%。'}]},
+  3:{title:'健身计划',status:'已完成',target:'减脂 5kg',duration:'2个月',
+    stages:[{title:'目标',desc:'2 个月减脂 5kg，体脂率降至 18%。'},
+      {title:'第一阶段：适应期',desc:'每周 3 次有氧，2 次力量训练，控制碳水摄入。'},
+      {title:'第二阶段：强化期',desc:'每周 4 次有氧，3 次力量训练，增加蛋白质摄入。'},
+      {title:'完成',desc:'成功减脂 5.2kg，体脂率 17.5%，目标达成！'}]}
+};
+
+function renderPlanDetail(id) {
+  var data = planDetails[id];
+  if (!data) { navigateTo('plan/canvas'); return; }
+  navTitle.textContent = data.title; navBack.classList.remove('hidden');
+  var clone = tplPlanDetail.content.cloneNode(true); view.appendChild(clone);
+  var tl = document.getElementById('plan-detail-timeline');
+  if (tl) {
+    tl.innerHTML = data.stages.map(function(s){
+      return '<div class="timeline-node"><div class="timeline-node-title">'+escHtml(s.title)+'</div><div class="timeline-node-desc">'+escHtml(s.desc)+'</div></div>';
+    }).join('');
+  }
+}
+function escHtml(str) { var d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+
+// ═══ 新增页面渲染 ═══
+function renderRecords() { view.appendChild(tplRecords.content.cloneNode(true)); }
+function renderLearn() {
+  var clone = tplLearn.content.cloneNode(true); view.appendChild(clone);
+  view.querySelectorAll('.info-card').forEach(function(c){ c.addEventListener('click',function(){ navigateTo(c.dataset.nav); }); });
+}
+function renderLearnAsk() { view.appendChild(tplLearnAsk.content.cloneNode(true)); }
+function renderLearnMistakes() { view.appendChild(tplLearnMistakes.content.cloneNode(true)); }
+function renderLearnScores() { view.appendChild(tplLearnScores.content.cloneNode(true)); }
+function renderPlan() {
+  var clone = tplPlan.content.cloneNode(true); view.appendChild(clone);
+  view.querySelectorAll('.info-card').forEach(function(c){ c.addEventListener('click',function(){ navigateTo(c.dataset.nav); }); });
+}
+function renderPlanAiPlan() { view.appendChild(tplPlanAiPlan.content.cloneNode(true)); }
+function renderPlanCanvas() {
+  var clone = tplPlanCanvas.content.cloneNode(true); view.appendChild(clone);
+  view.querySelectorAll('.plan-block').forEach(function(b){ b.addEventListener('click',function(){ navigateTo(b.dataset.nav); }); });
+}
 window.addEventListener('hashchange', handleRoute); navBack.addEventListener('click', goBack);
 
 function renderHome() {
-  view.innerHTML = `<div class="page-home"><div class="home-hero"><h1>辉</h1><p>记录碎片灵感 · 解答学习困惑 · 收集万千信息</p></div><div class="home-cards"><div class="home-card" data-nav="info"><div class="home-card-icon info"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><line x1="12" y1="11" x2="16" y2="11"/><line x1="8" y1="11" x2="10" y2="11"/><line x1="12" y1="15" x2="16" y2="15"/><line x1="8" y1="15" x2="10" y2="15"/></svg></div><div class="home-card-body"><h3>信息板块</h3><p>便签记载 · AI对话 · 信息收集</p></div><span class="home-card-arrow">›</span></div><div class="home-card" data-nav="history"><div class="home-card-icon history"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="home-card-body"><h3>历史记录</h3><p>书籍阅读 · 日常记录 · 时间线回顾</p></div><span class="home-card-arrow">›</span></div></div></div>`;
+  view.innerHTML = `<div class="page-home"><div class="home-hero"><h1>辉</h1><p>记录碎片灵感 · 解答学习困惑 · 收集万千信息</p></div><div class="home-cards"><div class="home-card" data-nav="info"><div class="home-card-icon info"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><line x1="12" y1="11" x2="16" y2="11"/><line x1="8" y1="11" x2="10" y2="11"/><line x1="12" y1="15" x2="16" y2="15"/><line x1="8" y1="15" x2="10" y2="15"/></svg></div><div class="home-card-body"><h3>信息板块</h3><p>便签记载 · AI对话 · 信息收集</p></div><span class="home-card-arrow">›</span></div><div class="home-card" data-nav="records"><div class="home-card-icon history"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="home-card-body"><h3>记录</h3><p>书籍阅读 · 日常记录 · 时间线回顾</p></div><span class="home-card-arrow">›</span></div><div class="home-card" data-nav="learn"><div class="home-card-icon info"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 3 3 6 3s6-1 6-3v-5"/></svg></div><div class="home-card-body"><h3>学习</h3><p>求助 · 错题 · 成绩</p></div><span class="home-card-arrow">›</span></div><div class="home-card" data-nav="plan"><div class="home-card-icon history"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="6" x2="12" y2="12"/><line x1="12" y1="12" x2="16" y2="14"/></svg></div><div class="home-card-body"><h3>计划</h3><p>AI 计划 · 计划布</p></div><span class="home-card-arrow">›</span></div></div></div>`;
   view.querySelectorAll('.home-card').forEach(c => c.addEventListener('click', () => navigateTo(c.dataset.nav)));
 }
 function renderInfo() {
