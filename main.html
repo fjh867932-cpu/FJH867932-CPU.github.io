@@ -5,7 +5,7 @@
     // 强制检查：防止绕过验证直接访问主站
     if (!localStorage.getItem("verified")) {
         localStorage.removeItem("huiwu_session");
-        window.location.href = "index.html";
+        window.location.href = "/verify.html";
     }
 </script>
   <meta charset="UTF-8">
@@ -60,7 +60,7 @@
 
   <script>
     // 门禁检查
-    if(!localStorage.getItem('verified')){localStorage.removeItem('huiwu_session');window.location.href='index.html'}
+    if(!localStorage.getItem('verified')){localStorage.removeItem('huiwu_session');window.location.href='/verify.html'}
   </script>
   <script src="app.js"></script>
 </body>
